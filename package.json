@@ -1,0 +1,17 @@
+{
+  "name": "parental-legacy-calculator",
+  "version": "1.0.0",
+  "description": "Quantum Vedic - Parental Legacy & Life Factors Calculator (MERN Full Stack)",
+  "author": "Lokesh Prajapati <7okeshprajapati23@gmail.com>",
+  "scripts": {
+    "install:all": "npm install && npm install --prefix server && npm install --prefix client",
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "npm run dev --prefix server",
+    "dev:client": "npm run dev --prefix client",
+    "start": "npm start --prefix server",
+    "build": "npm run build --prefix client"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
