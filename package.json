@@ -8,7 +8,7 @@
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
     "dev:server": "npm run dev --prefix server",
     "dev:client": "npm run dev --prefix client",
-    "build": "npm --prefix client install && npm --prefix client run build && npm --prefix server install",
+    "build": "npm --prefix client install --include=dev && npm --prefix client run build && npm --prefix server install",
     "start": "node server/server.js"
   },
   "devDependencies": {
