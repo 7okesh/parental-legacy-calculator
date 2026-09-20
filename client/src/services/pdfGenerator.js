@@ -10,9 +10,9 @@ export const generatePdfReport = (calculationResult, userName = 'Candidate') => 
     format: 'a4'
   });
 
-  const primaryColor = [99, 102, 241];   // Indigo
-  const motherColor = [236, 72, 153];   // Pink
-  const fatherColor = [79, 70, 229];    // Purple
+  const primaryColor = [37, 99, 235];   // Enterprise Blue
+  const motherColor = [225, 29, 72];    // Enterprise Rose
+  const fatherColor = [37, 99, 235];    // Enterprise Blue
   const darkBg = [15, 23, 42];
 
   // Header Banner
@@ -47,12 +47,12 @@ export const generatePdfReport = (calculationResult, userName = 'Candidate') => 
 
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(11);
-  doc.setTextColor(99, 102, 241);
+  doc.setTextColor(37, 99, 235);
   doc.text(calculationResult.dob || 'N/A', 20, 64);
 
-  doc.setTextColor(calculationResult.dominantParent === 'Mother' ? 219 : 79, 
-                   calculationResult.dominantParent === 'Mother' ? 39 : 70, 
-                   calculationResult.dominantParent === 'Mother' ? 119 : 229);
+  doc.setTextColor(calculationResult.dominantParent === 'Mother' ? 225 : 37, 
+                   calculationResult.dominantParent === 'Mother' ? 29 : 99, 
+                   calculationResult.dominantParent === 'Mother' ? 72 : 235);
   doc.text(`${calculationResult.dominantParent} Dominant`, 85, 64);
 
   doc.setTextColor(15, 23, 42);
@@ -117,8 +117,8 @@ export const generatePdfReport = (calculationResult, userName = 'Candidate') => 
     columnStyles: {
       0: { halign: 'center', cellWidth: 12 },
       1: { halign: 'left', cellWidth: 60, fontStyle: 'bold' },
-      2: { halign: 'right', cellWidth: 36, textColor: [219, 39, 119] },
-      3: { halign: 'right', cellWidth: 36, textColor: [79, 70, 229] },
+      2: { halign: 'right', cellWidth: 36, textColor: [225, 29, 72] }, // Enterprise Rose
+      3: { halign: 'right', cellWidth: 36, textColor: [37, 99, 235] },  // Enterprise Blue
       4: { halign: 'right', cellWidth: 38, fontStyle: 'bold' }
     },
     footStyles: {

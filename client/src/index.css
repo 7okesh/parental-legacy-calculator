@@ -4,55 +4,55 @@
 
 @layer base {
   :root {
-    --bg-primary: #0a0d14;
-    --bg-surface: #111726;
-    --bg-card: #161f33;
-    --border-color: #23304b;
-    --text-primary: #f8fafc;
-    --text-secondary: #94a3b8;
+    --bg-primary: #0B1020;
+    --bg-surface: #111827;
+    --bg-panel: #151D2F;
+    --border-color: #26324A;
+    --text-primary: #F8FAFC;
+    --text-secondary: #94A3B8;
+    --text-muted: #64748B;
   }
 
   .light {
-    --bg-primary: #f8fafc;
-    --bg-surface: #ffffff;
-    --bg-card: #f1f5f9;
-    --border-color: #cbd5e1;
-    --text-primary: #0f172a;
-    --text-secondary: #64748b;
+    --bg-primary: #F8FAFC;
+    --bg-surface: #FFFFFF;
+    --bg-panel: #F1F5F9;
+    --border-color: #CBD5E1;
+    --text-primary: #0F172A;
+    --text-secondary: #475569;
+    --text-muted: #94A3B8;
   }
 
   body {
     background-color: var(--bg-primary);
     color: var(--text-primary);
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    letter-spacing: -0.01em;
   }
 }
 
-/* Custom scrollbars */
+/* Bloomberg / Enterprise Dense Scrollbars */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.6);
+  background: #0B1020;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(99, 102, 241, 0.4);
-  border-radius: 4px;
+  background: #26324A;
+  border-radius: 2px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(99, 102, 241, 0.7);
+  background: #3B82F6;
 }
 
-/* Smooth pulse animation */
-@keyframes glow {
-  0%, 100% { opacity: 0.7; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.02); }
-}
-
-.animate-glow {
-  animation: glow 3s ease-in-out infinite;
+/* Subtle transitions only */
+* {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }

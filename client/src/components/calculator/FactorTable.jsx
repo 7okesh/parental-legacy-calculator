@@ -8,18 +8,23 @@ const FactorTable = ({ calculation }) => {
 
   return (
     <div className={`
-      rounded-2xl border overflow-hidden transition-all duration-200 my-6 shadow-xl shadow-black/20
-      ${isDark ? 'bg-[#0f1527] border-[#1e2a47]' : 'bg-white border-slate-200'}
+      rounded-xl border overflow-hidden my-4 transition-colors
+      ${isDark ? 'bg-[#111827] border-[#26324A]' : 'bg-white border-slate-200 shadow-sm'}
     `}>
       {/* Table Header Section */}
-      <div className="px-6 py-4 border-b border-inherit flex items-center justify-between">
-        <h2 className="text-base font-bold tracking-tight text-white flex items-center space-x-2">
-          <span>Detailed Factor Breakdown</span>
-        </h2>
-        <div className="flex items-center space-x-2">
-          <span className="text-[11px] px-2.5 py-1 rounded-md font-mono bg-slate-800 text-slate-300 border border-slate-700">
-            Precision: 3 Decimals
+      <div className={`px-5 py-3.5 border-b flex items-center justify-between ${
+        isDark ? 'border-[#202C45]' : 'border-slate-200'
+      }`}>
+        <div className="flex items-center space-x-2.5">
+          <h2 className={`text-sm font-bold tracking-tight ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>
+            Detailed Factor Breakdown
+          </h2>
+          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700/60">
+            7 Life Factors
           </span>
+        </div>
+        <div className="text-[11px] font-mono text-slate-400">
+          Precision: <span className="text-slate-200">0.001</span>
         </div>
       </div>
 
@@ -28,34 +33,30 @@ const FactorTable = ({ calculation }) => {
         <table className="w-full text-left text-xs md:text-sm">
           {/* Table Column Headers */}
           <thead>
-            <tr className={`border-b text-[11px] font-bold uppercase tracking-wider ${
-              isDark ? 'bg-[#141d33] border-[#1e2a47] text-slate-400' : 'bg-slate-50 border-slate-200 text-slate-600'
+            <tr className={`border-b text-[11px] font-semibold tracking-wider uppercase font-mono ${
+              isDark ? 'bg-[#0E1526] border-[#202C45] text-slate-400' : 'bg-slate-50 border-slate-200 text-slate-600'
             }`}>
-              <th scope="col" className="py-3.5 px-4 text-center w-12">#</th>
-              <th scope="col" className="py-3.5 px-6">LIFE FACTOR</th>
+              <th scope="col" className="py-2.5 px-4 text-center w-12 text-slate-500 font-medium">#</th>
+              <th scope="col" className="py-2.5 px-5">Life Factor</th>
               
-              {/* MOTHER INFLUENCE column header with pink accent badge matching video */}
-              <th scope="col" className="py-3.5 px-6 text-right">
-                <span className="inline-block px-2.5 py-0.5 rounded-md font-bold text-pink-400 bg-pink-500/10 border border-pink-500/20">
-                  MOTHER INFLUENCE
-                </span>
+              {/* MOTHER INFLUENCE Header */}
+              <th scope="col" className="py-2.5 px-5 text-right text-rose-400 font-semibold">
+                Mother Influence
               </th>
 
-              {/* FATHER INFLUENCE column header with indigo accent badge matching video */}
-              <th scope="col" className="py-3.5 px-6 text-right">
-                <span className="inline-block px-2.5 py-0.5 rounded-md font-bold text-indigo-400 bg-indigo-500/10 border border-indigo-500/20">
-                  FATHER INFLUENCE
-                </span>
+              {/* FATHER INFLUENCE Header */}
+              <th scope="col" className="py-2.5 px-5 text-right text-blue-400 font-semibold">
+                Father Influence
               </th>
 
-              <th scope="col" className="py-3.5 px-6 text-right font-bold text-slate-300">
-                TOTAL COMBINED
+              <th scope="col" className="py-2.5 px-5 text-right text-slate-300 font-semibold">
+                Total Combined
               </th>
             </tr>
           </thead>
 
-          {/* Table Body */}
-          <tbody className="divide-y divide-inherit">
+          {/* Table Rows */}
+          <tbody className={`divide-y font-mono ${isDark ? 'divide-[#1A253D]' : 'divide-slate-200'}`}>
             {calculation.factors.map((factor, index) => {
               const isMotherHigher = factor.motherValue > factor.fatherValue;
 
@@ -63,36 +64,36 @@ const FactorTable = ({ calculation }) => {
                 <tr 
                   key={factor.id || index}
                   className={`
-                    transition-colors duration-150
-                    ${isDark ? 'hover:bg-[#151f38]' : 'hover:bg-slate-50'}
+                    transition-colors duration-100
+                    ${isDark ? 'hover:bg-[#151E33]' : 'hover:bg-slate-50'}
                   `}
                 >
                   {/* # Index */}
-                  <td className="py-3 px-4 text-center font-mono text-slate-500 font-medium">
+                  <td className="py-2.5 px-4 text-center text-slate-500 text-xs font-normal">
                     {index + 1}
                   </td>
 
                   {/* Life Factor Name */}
-                  <td className="py-3 px-6 font-semibold text-slate-200">
+                  <td className="py-2.5 px-5 font-sans font-medium text-slate-200 text-xs md:text-sm">
                     {factor.name}
                   </td>
 
                   {/* Mother Value */}
-                  <td className={`py-3 px-6 text-right font-mono font-bold ${
-                    isMotherHigher ? 'text-pink-400 font-extrabold' : 'text-slate-300'
+                  <td className={`py-2.5 px-5 text-right tabular-nums text-xs md:text-sm ${
+                    isMotherHigher ? 'text-rose-400 font-bold' : 'text-slate-300'
                   }`}>
                     {factor.motherValue.toFixed(3)}
                   </td>
 
                   {/* Father Value */}
-                  <td className={`py-3 px-6 text-right font-mono font-bold ${
-                    !isMotherHigher ? 'text-indigo-400 font-extrabold' : 'text-slate-300'
+                  <td className={`py-2.5 px-5 text-right tabular-nums text-xs md:text-sm ${
+                    !isMotherHigher ? 'text-blue-400 font-bold' : 'text-slate-300'
                   }`}>
                     {factor.fatherValue.toFixed(3)}
                   </td>
 
                   {/* Total Combined */}
-                  <td className="py-3 px-6 text-right font-mono font-bold text-slate-200">
+                  <td className="py-2.5 px-5 text-right tabular-nums text-slate-200 font-semibold text-xs md:text-sm">
                     {factor.totalValue.toFixed(3)}
                   </td>
                 </tr>
@@ -100,29 +101,29 @@ const FactorTable = ({ calculation }) => {
             })}
           </tbody>
 
-          {/* Table Footer: TOTAL Row */}
+          {/* Table Footer: Total Row */}
           <tfoot>
             <tr className={`
-              border-t-2 font-mono font-extrabold text-sm md:text-base
-              ${isDark ? 'bg-[#12192d] border-[#223154]' : 'bg-slate-100 border-slate-300'}
+              border-t-2 font-mono font-bold text-xs md:text-sm
+              ${isDark ? 'bg-[#0E1526] border-[#22304F]' : 'bg-slate-100 border-slate-300'}
             `}>
-              <td className="py-4 px-4 text-center text-slate-500"></td>
-              <td className="py-4 px-6 tracking-wider font-extrabold text-white uppercase">
-                TOTAL
+              <td className="py-3 px-4 text-center text-slate-500"></td>
+              <td className="py-3 px-5 tracking-wider uppercase font-sans font-bold text-slate-100">
+                Total Combined
               </td>
               
               {/* Mother Total */}
-              <td className="py-4 px-6 text-right font-extrabold text-pink-400">
+              <td className="py-3 px-5 text-right tabular-nums text-rose-400 font-bold">
                 {calculation.motherTotal.toFixed(3)}
               </td>
 
               {/* Father Total */}
-              <td className="py-4 px-6 text-right font-extrabold text-indigo-400">
+              <td className="py-3 px-5 text-right tabular-nums text-blue-400 font-bold">
                 {calculation.fatherTotal.toFixed(3)}
               </td>
 
-              {/* Grand Total - 100.000 in red font matching video and Excel! */}
-              <td className="py-4 px-6 text-right font-black text-rose-500 text-base md:text-lg tracking-tight">
+              {/* Grand Total Invariant = 100.000 */}
+              <td className="py-3 px-5 text-right tabular-nums text-red-400 font-bold text-sm md:text-base">
                 {calculation.grandTotal.toFixed(3)}
               </td>
             </tr>

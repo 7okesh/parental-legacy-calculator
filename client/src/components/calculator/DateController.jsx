@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { 
   Calendar as CalendarIcon, 
-  Sparkles, 
+  RefreshCw, 
   ChevronLeft, 
-  ChevronRight, 
-  RotateCcw,
-  CheckCircle2
+  ChevronRight,
+  SlidersHorizontal,
+  FileSpreadsheet
 } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import { parseDDMMYYYY, formatDateToDDMMYYYY } from '../../utils/dateUtils';
@@ -14,20 +14,16 @@ const DateController = ({
   currentDob, 
   onDateChange, 
   onUpdateLogic, 
-  isCalculating, 
-  allowFutureDates = true,
-  setAllowFutureDates
+  isCalculating
 }) => {
   const { isDark } = useTheme();
   const [calendarOpen, setCalendarOpen] = useState(false);
   const calendarRef = useRef(null);
 
-  // Current view month & year in calendar
   const initialDate = parseDDMMYYYY(currentDob) || new Date();
   const [viewYear, setViewYear] = useState(initialDate.getFullYear());
-  const [viewMonth, setViewMonth] = useState(initialDate.getMonth()); // 0-indexed
+  const [viewMonth, setViewMonth] = useState(initialDate.getMonth());
 
-  // Close calendar on outside click
   useEffect(() => {
     const handleOutsideClick = (e) => {
       if (calendarRef.current && !calendarRef.current.contains(e.target)) {
@@ -43,9 +39,7 @@ const DateController = ({
     'July', 'August', 'September', 'October', 'November', 'December'
   ];
 
-  const daysOfWeek = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-
-  // Days calculations
+  const daysOfWeek = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
   const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
   const firstDayIndex = new Date(viewYear, viewMonth, 1).getDay();
 
@@ -92,87 +86,84 @@ const DateController = ({
 
   return (
     <div className={`
-      p-5 md:p-6 rounded-2xl border transition-all duration-200
-      ${isDark 
-        ? 'bg-gradient-to-r from-[#111728] via-[#141d33] to-[#111728] border-[#222e4d] shadow-xl shadow-black/20' 
-        : 'bg-gradient-to-r from-slate-50 via-white to-slate-50 border-slate-200 shadow-sm'
-      }
+      rounded-xl border transition-all duration-150 overflow-hidden
+      ${isDark ? 'bg-[#111827] border-[#26324A]' : 'bg-white border-slate-200 shadow-sm'}
     `}>
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-        {/* Title & Description */}
+      {/* Engine Control Bar */}
+      <div className="p-5 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        {/* Title & Engine Metadata */}
         <div>
-          <h1 className="text-lg md:text-xl font-bold tracking-tight text-white flex items-center space-x-2">
-            <span>Dynamic Analysis Logic</span>
-            <span className="text-xs px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 font-medium">
-              Vedic Engine v2.4
+          <div className="flex items-center space-x-2.5">
+            <h1 className={`text-base md:text-lg font-bold tracking-tight ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>
+              Dynamic Analysis Engine
+            </h1>
+            <span className={`text-[11px] font-mono px-2 py-0.5 rounded border ${
+              isDark ? 'bg-[#151D2F] border-[#2B3A5A] text-slate-300' : 'bg-slate-100 border-slate-200 text-slate-700'
+            }`}>
+              Vedic Analysis Engine v2.4
             </span>
-          </h1>
-          <p className="text-xs md:text-sm text-slate-400 mt-1 max-w-2xl leading-relaxed">
+          </div>
+          <p className="text-xs text-slate-400 mt-1 max-w-2xl leading-relaxed">
             Changing the candidate's Date of Birth will automatically recalculate maternal/paternal dominance limits.
           </p>
         </div>
 
-        {/* Date Selector and Update Logic Button matching video */}
-        <div className="flex items-center space-x-3 shrink-0 relative" ref={calendarRef}>
-          {/* Custom Date Input Trigger */}
+        {/* Date Selector & Action */}
+        <div className="flex items-center space-x-2.5 shrink-0 relative" ref={calendarRef}>
+          {/* Custom Date Input */}
           <div className="relative">
             <button
               onClick={() => setCalendarOpen(!calendarOpen)}
               className={`
-                flex items-center space-x-3 px-3.5 py-2 rounded-xl text-xs md:text-sm font-mono font-medium border transition-all duration-200
+                flex items-center space-x-2.5 px-3 py-2 rounded-lg text-xs font-mono font-medium border transition-colors
                 ${isDark 
-                  ? 'bg-[#151e36] border-[#263559] text-slate-100 hover:border-indigo-500/60 shadow-inner' 
-                  : 'bg-white border-slate-300 text-slate-800 hover:border-indigo-500 shadow-sm'
+                  ? 'bg-[#151D2F] border-[#26324A] text-slate-200 hover:border-slate-500' 
+                  : 'bg-slate-50 border-slate-300 text-slate-800 hover:border-slate-400'
                 }
               `}
+              title="Select Candidate Date of Birth"
             >
-              <CalendarIcon className="h-4 w-4 text-indigo-400 shrink-0" />
-              <span className="tracking-wider">{currentDob || 'Select DOB'}</span>
+              <CalendarIcon className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+              <span>{currentDob || 'DD/MM/YYYY'}</span>
             </button>
 
-            {/* Interactive Calendar Dropdown Popup */}
+            {/* Calendar Popup */}
             {calendarOpen && (
               <div className={`
-                absolute right-0 top-full mt-2 z-50 w-72 p-4 rounded-2xl border shadow-2xl backdrop-blur-xl animate-in fade-in zoom-in-95
-                ${isDark 
-                  ? 'bg-[#12192e]/95 border-[#28375e] text-slate-100 shadow-indigo-950/40' 
-                  : 'bg-white border-slate-200 text-slate-800 shadow-slate-300/60'
-                }
+                absolute right-0 top-full mt-1.5 z-50 w-64 p-3.5 rounded-xl border shadow-xl
+                ${isDark ? 'bg-[#151D2F] border-[#2B3A5A] text-slate-100' : 'bg-white border-slate-200 text-slate-800'}
               `}>
-                {/* Calendar Header */}
-                <div className="flex items-center justify-between mb-3 pb-2 border-b border-inherit">
-                  <span className="font-semibold text-sm">
+                <div className="flex items-center justify-between mb-2.5 pb-2 border-b border-inherit">
+                  <span className="font-semibold text-xs text-slate-200">
                     {monthNames[viewMonth]} {viewYear}
                   </span>
                   <div className="flex items-center space-x-1">
                     <button
                       type="button"
                       onClick={handlePrevMonth}
-                      className="p-1 rounded-lg hover:bg-slate-700/40 text-slate-400 hover:text-white"
+                      className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-white"
                     >
-                      <ChevronLeft className="h-4 w-4" />
+                      <ChevronLeft className="h-3.5 w-3.5" />
                     </button>
                     <button
                       type="button"
                       onClick={handleNextMonth}
-                      className="p-1 rounded-lg hover:bg-slate-700/40 text-slate-400 hover:text-white"
+                      className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-white"
                     >
-                      <ChevronRight className="h-4 w-4" />
+                      <ChevronRight className="h-3.5 w-3.5" />
                     </button>
                   </div>
                 </div>
 
-                {/* Days of Week */}
-                <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-semibold text-slate-400 mb-1">
+                <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-mono text-slate-400 mb-1">
                   {daysOfWeek.map((d, i) => (
                     <div key={i}>{d}</div>
                   ))}
                 </div>
 
-                {/* Calendar Days Grid */}
                 <div className="grid grid-cols-7 gap-1 text-center text-xs">
                   {Array.from({ length: firstDayIndex }).map((_, i) => (
-                    <div key={`empty-${i}`} className="h-7 w-7" />
+                    <div key={`empty-${i}`} className="h-6 w-6" />
                   ))}
                   {Array.from({ length: daysInMonth }).map((_, i) => {
                     const dayNumber = i + 1;
@@ -181,20 +172,18 @@ const DateController = ({
                       selectedDateObj.getMonth() === viewMonth &&
                       selectedDateObj.getFullYear() === viewYear;
 
-                    const isEven = dayNumber % 2 === 0;
-
                     return (
                       <button
                         key={dayNumber}
                         type="button"
                         onClick={() => handleSelectDay(dayNumber)}
                         className={`
-                          h-7 w-7 rounded-lg flex items-center justify-center font-mono font-medium transition-all
+                          h-6 w-6 rounded flex items-center justify-center font-mono text-xs transition-colors
                           ${isSelected 
-                            ? 'bg-indigo-600 text-white font-bold shadow-md shadow-indigo-600/40' 
+                            ? 'bg-blue-600 text-white font-bold' 
                             : isDark 
-                              ? 'text-slate-300 hover:bg-[#1f2a48] hover:text-white' 
-                              : 'text-slate-700 hover:bg-slate-100 hover:text-indigo-600'
+                              ? 'text-slate-300 hover:bg-[#1E293B] hover:text-white' 
+                              : 'text-slate-700 hover:bg-slate-100 hover:text-blue-600'
                           }
                         `}
                       >
@@ -204,19 +193,18 @@ const DateController = ({
                   })}
                 </div>
 
-                {/* Calendar Footer Buttons */}
-                <div className="flex items-center justify-between mt-3 pt-2 border-t border-inherit text-xs">
+                <div className="flex items-center justify-between mt-2.5 pt-2 border-t border-inherit text-[11px]">
                   <button
                     type="button"
                     onClick={handleClear}
-                    className="text-slate-400 hover:text-rose-400 px-2 py-1 transition-colors"
+                    className="text-slate-400 hover:text-rose-400 transition-colors"
                   >
                     Clear
                   </button>
                   <button
                     type="button"
                     onClick={handleSetToday}
-                    className="text-indigo-400 hover:text-indigo-300 font-medium px-2 py-1 transition-colors"
+                    className="text-blue-400 hover:text-blue-300 font-medium transition-colors"
                   >
                     Today
                   </button>
@@ -225,20 +213,37 @@ const DateController = ({
             )}
           </div>
 
-          {/* Update Logic Button matching video's purple gradient button */}
+          {/* Update Logic Primary Action */}
           <button
             onClick={onUpdateLogic}
             disabled={isCalculating}
             className={`
-              flex items-center space-x-2 px-4 py-2 rounded-xl text-xs md:text-sm font-semibold text-white 
-              bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 hover:from-indigo-500 hover:to-purple-500
-              shadow-lg shadow-indigo-600/30 active:scale-95 transition-all duration-150 shrink-0
-              ${isCalculating ? 'opacity-70 cursor-wait' : ''}
+              flex items-center space-x-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold text-white 
+              bg-blue-600 hover:bg-blue-500 border border-blue-500 shadow-sm transition-colors shrink-0
+              ${isCalculating ? 'opacity-60 cursor-wait' : ''}
             `}
           >
-            <Sparkles className={`h-4 w-4 ${isCalculating ? 'animate-spin' : 'animate-pulse'}`} />
+            <RefreshCw className={`h-3.5 w-3.5 ${isCalculating ? 'animate-spin' : ''}`} />
             <span>Update Logic</span>
           </button>
+        </div>
+      </div>
+
+      {/* Subtle Technical Telemetry Strip */}
+      <div className={`px-5 py-2 border-t flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono ${
+        isDark ? 'bg-[#0E1526] border-[#202C45] text-slate-400' : 'bg-slate-50 border-slate-200 text-slate-600'
+      }`}>
+        <div className="flex items-center space-x-4">
+          <span>Source: <strong className="text-slate-300 font-normal">Test.xlsx</strong></span>
+          <span className="text-slate-600">•</span>
+          <span>Factors Evaluated: <strong className="text-slate-300 font-normal">7</strong></span>
+          <span className="text-slate-600 hidden sm:inline">•</span>
+          <span className="hidden sm:inline">Engine: <strong className="text-slate-300 font-normal">Parity Dominance</strong></span>
+        </div>
+        <div className="flex items-center space-x-4">
+          <span>Precision: <strong className="text-slate-300 font-normal">3 Decimals</strong></span>
+          <span className="text-slate-600">•</span>
+          <span>Target Sum: <strong className="text-emerald-400 font-normal">100.000</strong></span>
         </div>
       </div>
     </div>

@@ -127,44 +127,44 @@ const UploadModal = ({ isOpen, onClose, onFactorsLoaded, setCurrentFileName }) =
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
       <div className={`
-        w-full max-w-md p-6 rounded-2xl border shadow-2xl transition-all
-        ${isDark ? 'bg-[#111728] border-[#253355] text-slate-100' : 'bg-white border-slate-200 text-slate-800'}
+        w-full max-w-md p-6 rounded-xl border shadow-2xl transition-all
+        ${isDark ? 'bg-[#111827] border-[#26324A] text-slate-100' : 'bg-white border-slate-200 text-slate-800'}
       `}>
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-inherit">
+        <div className="flex items-center justify-between pb-4 border-b border-[#1E293B]">
           <div className="flex items-center space-x-2.5">
-            <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-400">
+            <div className="p-2 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20">
               <FileSpreadsheet className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="font-bold text-base">Upload Assessment Excel</h3>
-              <p className="text-xs text-slate-400">Upload Test.xlsx to load custom parameters</p>
+              <h3 className="font-semibold text-sm text-slate-100">Upload Dataset</h3>
+              <p className="text-xs text-slate-400">Import Test.xlsx to configure custom factor matrix</p>
             </div>
           </div>
           <button 
             onClick={onClose}
-            className="p-1 rounded-lg hover:bg-slate-700/40 text-slate-400 hover:text-white"
+            className="p-1 rounded-lg hover:bg-[#1E293B] text-slate-400 hover:text-slate-200 transition-colors"
           >
-            <X className="h-5 w-5" />
+            <X className="h-4 w-4" />
           </button>
         </div>
 
         {/* Drop / Select Area */}
-        <div className="my-6">
+        <div className="my-5">
           <label className={`
-            flex flex-col items-center justify-center p-6 border-2 border-dashed rounded-2xl cursor-pointer transition-all
+            flex flex-col items-center justify-center p-6 border border-dashed rounded-xl cursor-pointer transition-all
             ${isDark 
-              ? 'border-[#29385c] hover:border-indigo-500/60 bg-[#141d33]/50 hover:bg-[#16213b]' 
-              : 'border-slate-300 hover:border-indigo-500 bg-slate-50 hover:bg-slate-100'
+              ? 'border-[#26324A] hover:border-blue-500/60 bg-[#0F172A]/70 hover:bg-[#151D2F]' 
+              : 'border-slate-300 hover:border-blue-500 bg-slate-50 hover:bg-slate-100'
             }
           `}>
-            <UploadCloud className="h-10 w-10 text-indigo-400 mb-2 animate-bounce" />
+            <UploadCloud className="h-8 w-8 text-blue-400 mb-2.5" />
             <span className="text-xs font-semibold text-slate-200">
               {file ? file.name : 'Click to browse or drop .xlsx file'}
             </span>
-            <span className="text-[10px] text-slate-400 mt-1">Supports Test.xlsx, .xlsx, .xls (max 10MB)</span>
+            <span className="text-[11px] text-slate-400 mt-1">Supports Test.xlsx, .xlsx, .xls (max 10MB)</span>
             <input 
               type="file" 
               accept=".xlsx, .xls" 
@@ -176,7 +176,7 @@ const UploadModal = ({ isOpen, onClose, onFactorsLoaded, setCurrentFileName }) =
 
         {/* Status Message */}
         {status && (
-          <div className={`mb-4 p-3 rounded-xl text-xs flex items-center space-x-2 ${
+          <div className={`mb-4 p-3 rounded-lg text-xs flex items-center space-x-2 ${
             status.type === 'success' 
               ? 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-300' 
               : 'bg-rose-500/10 border border-rose-500/20 text-rose-300'
@@ -191,11 +191,11 @@ const UploadModal = ({ isOpen, onClose, onFactorsLoaded, setCurrentFileName }) =
         )}
 
         {/* Action Buttons */}
-        <div className="flex items-center justify-end space-x-2 pt-2 border-t border-inherit">
+        <div className="flex items-center justify-end space-x-2 pt-3 border-t border-[#1E293B]">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 rounded-xl text-xs font-medium text-slate-400 hover:text-white"
+            className="px-3.5 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-slate-200 hover:bg-[#1E293B] transition-colors"
           >
             Cancel
           </button>
@@ -204,13 +204,13 @@ const UploadModal = ({ isOpen, onClose, onFactorsLoaded, setCurrentFileName }) =
             onClick={handleUpload}
             disabled={!file || isUploading}
             className={`
-              flex items-center space-x-1.5 px-5 py-2 rounded-xl text-xs font-semibold text-white
-              bg-indigo-600 hover:bg-indigo-500 shadow-lg shadow-indigo-600/30 transition-all
+              flex items-center space-x-1.5 px-4 py-1.5 rounded-lg text-xs font-semibold text-white
+              bg-blue-600 hover:bg-blue-500 transition-colors shadow-sm
               ${(!file || isUploading) ? 'opacity-60 cursor-not-allowed' : ''}
             `}
           >
             {isUploading && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-            <span>{isUploading ? 'Parsing...' : 'Upload & Parse'}</span>
+            <span>{isUploading ? 'Parsing Dataset...' : 'Import Dataset'}</span>
           </button>
         </div>
       </div>

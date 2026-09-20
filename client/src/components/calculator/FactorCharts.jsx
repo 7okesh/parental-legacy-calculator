@@ -9,13 +9,12 @@ import { useTheme } from '../../context/ThemeContext';
 
 const FactorCharts = ({ calculation }) => {
   const { isDark } = useTheme();
-  const [chartType, setChartType] = useState('bar'); // 'bar' | 'radar' | 'donut'
+  const [chartType, setChartType] = useState('bar');
 
   if (!calculation || !calculation.factors) return null;
 
-  // Format data for Recharts
   const barData = calculation.factors.map(f => ({
-    name: f.name.length > 15 ? f.name.substring(0, 13) + '...' : f.name,
+    name: f.name.length > 16 ? f.name.substring(0, 14) + '…' : f.name,
     fullName: f.name,
     Mother: f.motherValue,
     Father: f.fatherValue,
@@ -30,36 +29,35 @@ const FactorCharts = ({ calculation }) => {
   }));
 
   const pieData = [
-    { name: 'Mother Influence', value: calculation.motherTotal, color: '#ec4899' },
-    { name: 'Father Influence', value: calculation.fatherTotal, color: '#6366f1' }
+    { name: 'Mother Influence', value: calculation.motherTotal, color: '#F43F5E' },
+    { name: 'Father Influence', value: calculation.fatherTotal, color: '#3B82F6' }
   ];
 
   return (
     <div className={`
-      p-6 rounded-2xl border transition-all duration-200 my-6 shadow-xl shadow-black/20
-      ${isDark ? 'bg-[#0f1527] border-[#1e2a47]' : 'bg-white border-slate-200'}
+      p-5 rounded-xl border transition-colors my-4
+      ${isDark ? 'bg-[#111827] border-[#26324A]' : 'bg-white border-slate-200 shadow-sm'}
     `}>
       {/* Visual Analytics Header & Toggle */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 mb-4 border-b border-inherit gap-3">
+      <div className={`flex flex-col sm:flex-row sm:items-center justify-between pb-3.5 mb-3.5 border-b gap-3 ${
+        isDark ? 'border-[#202C45]' : 'border-slate-200'
+      }`}>
         <div>
-          <h2 className="text-base font-bold tracking-tight text-white flex items-center space-x-2">
-            <span>Parental Factor Visualizations</span>
-            <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-              Interactive
-            </span>
+          <h2 className={`text-sm font-bold tracking-tight ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>
+            Parental Contribution Visualizations
           </h2>
           <p className="text-xs text-slate-400 mt-0.5">
-            Visual comparison of maternal vs paternal contribution across all 7 life factors.
+            Comparative analysis of maternal vs paternal balance across all 7 life factors.
           </p>
         </div>
 
         {/* View Switcher Tabs */}
-        <div className={`inline-flex p-1 rounded-xl border ${isDark ? 'bg-[#141d33] border-[#222e4d]' : 'bg-slate-100 border-slate-200'}`}>
+        <div className={`inline-flex p-1 rounded-lg border ${isDark ? 'bg-[#151D2F] border-[#26324A]' : 'bg-slate-100 border-slate-200'}`}>
           <button
             onClick={() => setChartType('bar')}
-            className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+            className={`flex items-center space-x-1 px-3 py-1.5 rounded text-xs font-medium transition-colors ${
               chartType === 'bar' 
-                ? 'bg-indigo-600 text-white shadow-md' 
+                ? 'bg-blue-600 text-white font-semibold' 
                 : 'text-slate-400 hover:text-slate-200'
             }`}
           >
@@ -68,9 +66,9 @@ const FactorCharts = ({ calculation }) => {
           </button>
           <button
             onClick={() => setChartType('radar')}
-            className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+            className={`flex items-center space-x-1 px-3 py-1.5 rounded text-xs font-medium transition-colors ${
               chartType === 'radar' 
-                ? 'bg-indigo-600 text-white shadow-md' 
+                ? 'bg-blue-600 text-white font-semibold' 
                 : 'text-slate-400 hover:text-slate-200'
             }`}
           >
@@ -79,9 +77,9 @@ const FactorCharts = ({ calculation }) => {
           </button>
           <button
             onClick={() => setChartType('donut')}
-            className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+            className={`flex items-center space-x-1 px-3 py-1.5 rounded text-xs font-medium transition-colors ${
               chartType === 'donut' 
-                ? 'bg-indigo-600 text-white shadow-md' 
+                ? 'bg-blue-600 text-white font-semibold' 
                 : 'text-slate-400 hover:text-slate-200'
             }`}
           >
@@ -91,54 +89,56 @@ const FactorCharts = ({ calculation }) => {
         </div>
       </div>
 
-      {/* Chart Canvas */}
-      <div className="h-72 w-full pt-2">
+      {/* Chart Viewport */}
+      <div className="h-68 w-full pt-1" style={{ minHeight: '260px' }}>
         {chartType === 'bar' && (
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={barData} margin={{ top: 10, right: 10, left: -15, bottom: 25 }}>
+          <ResponsiveContainer width="100%" height={260}>
+            <BarChart data={barData} margin={{ top: 10, right: 10, left: -15, bottom: 20 }}>
               <XAxis 
                 dataKey="name" 
-                tick={{ fill: '#94a3b8', fontSize: 11 }} 
-                angle={-15} 
+                tick={{ fill: '#94A3B8', fontSize: 10, fontFamily: 'monospace' }} 
+                angle={-10} 
                 textAnchor="end"
                 interval={0}
               />
               <YAxis 
                 domain={[0, 12]} 
-                tick={{ fill: '#94a3b8', fontSize: 11 }} 
+                tick={{ fill: '#94A3B8', fontSize: 10, fontFamily: 'monospace' }} 
               />
               <Tooltip 
                 contentStyle={{ 
-                  backgroundColor: '#111827', 
-                  borderColor: '#374151',
-                  borderRadius: '12px',
-                  color: '#f3f4f6',
-                  fontSize: '12px'
+                  backgroundColor: '#151D2F', 
+                  borderColor: '#26324A',
+                  borderRadius: '8px',
+                  color: '#F8FAFC',
+                  fontSize: '11px',
+                  fontFamily: 'monospace'
                 }} 
               />
-              <Legend verticalAlign="top" height={36} />
-              <Bar dataKey="Mother" fill="#ec4899" radius={[4, 4, 0, 0]} name="Mother Influence" />
-              <Bar dataKey="Father" fill="#6366f1" radius={[4, 4, 0, 0]} name="Father Influence" />
+              <Legend verticalAlign="top" height={32} wrapperStyle={{ fontSize: '11px' }} />
+              <Bar dataKey="Mother" fill="#F43F5E" radius={[2, 2, 0, 0]} name="Mother Influence" />
+              <Bar dataKey="Father" fill="#3B82F6" radius={[2, 2, 0, 0]} name="Father Influence" />
             </BarChart>
           </ResponsiveContainer>
         )}
 
         {chartType === 'radar' && (
-          <ResponsiveContainer width="100%" height="100%">
-            <RadarChart outerRadius="75%" data={radarData}>
-              <PolarGrid stroke="#334155" />
-              <PolarAngleAxis dataKey="factor" tick={{ fill: '#94a3b8', fontSize: 10 }} />
-              <PolarRadiusAxis angle={30} domain={[0, 11]} stroke="#475569" />
-              <Radar name="Mother Influence" dataKey="Mother" stroke="#ec4899" fill="#ec4899" fillOpacity={0.4} />
-              <Radar name="Father Influence" dataKey="Father" stroke="#6366f1" fill="#6366f1" fillOpacity={0.4} />
-              <Legend verticalAlign="top" height={36} />
+          <ResponsiveContainer width="100%" height={260}>
+            <RadarChart outerRadius="70%" data={radarData}>
+              <PolarGrid stroke="#26324A" />
+              <PolarAngleAxis dataKey="factor" tick={{ fill: '#94A3B8', fontSize: 10 }} />
+              <PolarRadiusAxis angle={30} domain={[0, 11]} stroke="#334155" tick={{ fill: '#64748B', fontSize: 9 }} />
+              <Radar name="Mother Influence" dataKey="Mother" stroke="#F43F5E" fill="#F43F5E" fillOpacity={0.25} />
+              <Radar name="Father Influence" dataKey="Father" stroke="#3B82F6" fill="#3B82F6" fillOpacity={0.25} />
+              <Legend verticalAlign="top" height={32} wrapperStyle={{ fontSize: '11px' }} />
               <Tooltip 
                 contentStyle={{ 
-                  backgroundColor: '#111827', 
-                  borderColor: '#374151',
-                  borderRadius: '12px',
-                  color: '#f3f4f6',
-                  fontSize: '12px'
+                  backgroundColor: '#151D2F', 
+                  borderColor: '#26324A',
+                  borderRadius: '8px',
+                  color: '#F8FAFC',
+                  fontSize: '11px',
+                  fontFamily: 'monospace'
                 }} 
               />
             </RadarChart>
@@ -146,17 +146,17 @@ const FactorCharts = ({ calculation }) => {
         )}
 
         {chartType === 'donut' && (
-          <div className="h-full flex flex-col md:flex-row items-center justify-center gap-6">
-            <div className="h-56 w-56">
+          <div className="h-full flex flex-col md:flex-row items-center justify-center gap-8 py-2">
+            <div className="h-52 w-52">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
                     data={pieData}
                     cx="50%"
                     cy="50%"
-                    innerRadius={55}
-                    outerRadius={80}
-                    paddingAngle={5}
+                    innerRadius={50}
+                    outerRadius={75}
+                    paddingAngle={3}
                     dataKey="value"
                   >
                     {pieData.map((entry, index) => (
@@ -166,36 +166,37 @@ const FactorCharts = ({ calculation }) => {
                   <Tooltip 
                     formatter={(val) => `${Number(val).toFixed(3)}%`}
                     contentStyle={{ 
-                      backgroundColor: '#111827', 
-                      borderColor: '#374151',
-                      borderRadius: '12px',
-                      color: '#f3f4f6',
-                      fontSize: '12px'
+                      backgroundColor: '#151D2F', 
+                      borderColor: '#26324A',
+                      borderRadius: '8px',
+                      color: '#F8FAFC',
+                      fontSize: '11px',
+                      fontFamily: 'monospace'
                     }} 
                   />
                 </PieChart>
               </ResponsiveContainer>
             </div>
 
-            <div className="space-y-3 font-mono text-xs">
-              <div className="flex items-center space-x-3 p-3 rounded-xl bg-pink-500/10 border border-pink-500/20">
-                <div className="h-3 w-3 rounded-full bg-pink-500" />
+            <div className="space-y-2 font-mono text-xs">
+              <div className="flex items-center space-x-3 p-2.5 rounded-lg bg-[#151D2F] border border-[#26324A]">
+                <div className="h-2.5 w-2.5 rounded-full bg-rose-500 shrink-0" />
                 <div>
-                  <div className="font-bold text-pink-400">Mother Total Influence</div>
-                  <div className="text-white text-sm font-extrabold">{calculation.motherTotal.toFixed(3)}% ({calculation.motherInfluence}%)</div>
+                  <div className="text-slate-400 text-[10px]">Mother Total Contribution</div>
+                  <div className="text-rose-400 font-bold">{calculation.motherTotal.toFixed(3)}%</div>
                 </div>
               </div>
 
-              <div className="flex items-center space-x-3 p-3 rounded-xl bg-indigo-500/10 border border-indigo-500/20">
-                <div className="h-3 w-3 rounded-full bg-indigo-500" />
+              <div className="flex items-center space-x-3 p-2.5 rounded-lg bg-[#151D2F] border border-[#26324A]">
+                <div className="h-2.5 w-2.5 rounded-full bg-blue-500 shrink-0" />
                 <div>
-                  <div className="font-bold text-indigo-400">Father Total Influence</div>
-                  <div className="text-white text-sm font-extrabold">{calculation.fatherTotal.toFixed(3)}% ({calculation.fatherInfluence}%)</div>
+                  <div className="text-slate-400 text-[10px]">Father Total Contribution</div>
+                  <div className="text-blue-400 font-bold">{calculation.fatherTotal.toFixed(3)}%</div>
                 </div>
               </div>
 
               <div className="text-slate-400 text-[11px] pt-1">
-                Invariant Verification: {calculation.motherTotal.toFixed(3)} + {calculation.fatherTotal.toFixed(3)} = <span className="text-rose-400 font-bold">100.000%</span>
+                Sum: {calculation.motherTotal.toFixed(3)} + {calculation.fatherTotal.toFixed(3)} = <span className="text-emerald-400 font-semibold">100.000%</span>
               </div>
             </div>
           </div>

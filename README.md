@@ -108,4 +108,3 @@ node server/testCalculation.js
 - **Candidate:** Lokesh Prajapati
 - **Phone:** +91-9022398228
 - **Email:** 7okeshprajapati23@gmail.com
-- **Target WhatsApp:** 8454815742

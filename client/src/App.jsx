@@ -140,11 +140,12 @@ function App() {
   };
 
   return (
-    <div className={`min-h-screen flex ${isDark ? 'bg-[#0a0d14] text-slate-100' : 'bg-slate-50 text-slate-900'}`}>
+    <div className={`min-h-screen flex ${isDark ? 'bg-[#0B1020] text-slate-100' : 'bg-slate-50 text-slate-900'}`}>
       {/* Toast Notification */}
       {toast && (
-        <div className="fixed bottom-5 right-5 z-50 animate-in fade-in slide-in-from-bottom-5">
-          <div className="px-4 py-2.5 rounded-xl shadow-2xl font-medium text-xs flex items-center space-x-2 bg-indigo-600 text-white border border-indigo-400/40">
+        <div className="fixed bottom-5 right-5 z-50 animate-in fade-in slide-in-from-bottom-3">
+          <div className="px-3.5 py-2 rounded-lg shadow-xl font-medium text-xs flex items-center space-x-2.5 bg-[#151D2F] text-slate-200 border border-[#26324A]">
+            <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
             <span>{toast.message}</span>
           </div>
         </div>
@@ -199,7 +200,7 @@ function App() {
             </p>
             <p className="text-[11px]">
               Engineered with React, Node.js, Express, MongoDB & Tailwind CSS by{' '}
-              <span className="text-indigo-400 font-semibold">Lokesh Prajapati</span> (7okeshprajapati23@gmail.com)
+              <span className="text-blue-400 font-medium">Lokesh Prajapati</span> (7okeshprajapati23@gmail.com)
             </p>
           </footer>
         </main>

@@ -4,8 +4,7 @@ import {
   Table as TableIcon, 
   Bookmark, 
   Menu,
-  ChevronRight,
-  Database,
+  FileSpreadsheet,
   Check
 } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
@@ -22,82 +21,85 @@ const Header = ({
 
   return (
     <header className={`
-      px-6 py-4 border-b flex items-center justify-between sticky top-0 z-30 backdrop-blur-md
-      ${isDark ? 'bg-[#0a0d14]/90 border-[#1e2942]' : 'bg-white/90 border-slate-200'}
+      px-6 py-3.5 border-b flex items-center justify-between sticky top-0 z-30
+      ${isDark ? 'bg-[#0B1020]/95 border-[#202C45] backdrop-blur-md' : 'bg-white/95 border-slate-200 backdrop-blur-md'}
     `}>
-      {/* Left: Mobile hamburger + Breadcrumbs */}
+      {/* Left: Mobile menu toggle + Workspace Breadcrumb */}
       <div className="flex items-center space-x-3">
         <button
           onClick={() => setMobileOpen(true)}
-          className="md:hidden p-2 rounded-lg hover:bg-slate-800/50 text-slate-400"
+          className="md:hidden p-1.5 rounded-lg hover:bg-slate-800 text-slate-400"
+          aria-label="Open Navigation"
         >
           <Menu className="h-5 w-5" />
         </button>
 
         <div className="flex items-center space-x-2 text-xs md:text-sm font-medium">
-          <span className="text-slate-400 hover:text-slate-200 transition-colors">Analytics</span>
-          <ChevronRight className="h-3.5 w-3.5 text-slate-500" />
-          <span className={`px-2.5 py-1 rounded-md text-xs font-mono font-semibold border ${
+          <span className="text-slate-400">Analytics</span>
+          <span className="text-slate-600 font-mono">/</span>
+          <div className={`flex items-center space-x-1.5 px-2.5 py-1 rounded-md text-xs font-mono border ${
             isDark 
-              ? 'bg-[#141d33] border-[#243355] text-indigo-300' 
-              : 'bg-slate-100 border-slate-200 text-indigo-700'
+              ? 'bg-[#151D2F] border-[#26324A] text-slate-200' 
+              : 'bg-slate-100 border-slate-200 text-slate-800'
           }`}>
-            {currentFileName}
-          </span>
+            <FileSpreadsheet className="h-3.5 w-3.5 text-blue-400 shrink-0" />
+            <span>{currentFileName}</span>
+          </div>
         </div>
       </div>
 
-      {/* Right: Actions */}
-      <div className="flex items-center space-x-2.5">
-        {/* Save to DB button */}
+      {/* Right: Realistic Enterprise Action Toolbar */}
+      <div className="flex items-center space-x-2">
+        {/* Save to Records */}
         <button
           onClick={onSave}
           className={`
-            hidden sm:flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-all duration-200
+            hidden sm:flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors
             ${saveSuccess 
-              ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300' 
+              ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' 
               : isDark 
-                ? 'bg-[#141b30] border-[#253252] text-slate-300 hover:bg-[#1b2542] hover:text-white' 
-                : 'bg-slate-100 border-slate-200 text-slate-700 hover:bg-slate-200'
+                ? 'bg-[#151D2F] border-[#26324A] text-slate-300 hover:bg-[#1E293B] hover:text-white' 
+                : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
             }
           `}
-          title="Save calculation to MongoDB / Local Storage"
+          title="Save calculation to assessment records"
         >
           {saveSuccess ? (
             <>
               <Check className="h-3.5 w-3.5 text-emerald-400" />
-              <span>Saved!</span>
+              <span>Saved</span>
             </>
           ) : (
             <>
               <Bookmark className="h-3.5 w-3.5 text-slate-400" />
-              <span>Save</span>
+              <span>Save Record</span>
             </>
           )}
         </button>
 
-        {/* Export CSV button */}
+        {/* Export CSV */}
         <button
           onClick={onExportCsv}
           className={`
-            hidden sm:flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-all duration-200
+            hidden sm:flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors
             ${isDark 
-              ? 'bg-[#141b30] border-[#253252] text-slate-300 hover:bg-[#1b2542] hover:text-white' 
-              : 'bg-slate-100 border-slate-200 text-slate-700 hover:bg-slate-200'
+              ? 'bg-[#151D2F] border-[#26324A] text-slate-300 hover:bg-[#1E293B] hover:text-white' 
+              : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
             }
           `}
-          title="Export CSV dataset"
+          title="Download dataset as CSV"
         >
           <TableIcon className="h-3.5 w-3.5 text-slate-400" />
           <span>Export CSV</span>
         </button>
 
-        {/* Export PDF button matching video */}
+        {/* Export PDF (Primary Action) */}
         <button
           onClick={onExportPdf}
-          className="flex items-center space-x-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-slate-700 to-slate-800 hover:from-slate-600 hover:to-slate-700 text-white border border-slate-600/50 shadow-sm transition-all"
+          className="flex items-center space-x-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold text-white bg-blue-600 hover:bg-blue-500 border border-blue-500 shadow-sm transition-colors"
+          title="Download formal assessment report"
         >
-          <FileDown className="h-3.5 w-3.5 text-indigo-300" />
+          <FileDown className="h-3.5 w-3.5" />
           <span>Export PDF</span>
         </button>
       </div>
