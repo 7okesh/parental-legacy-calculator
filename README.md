@@ -44,6 +44,19 @@ A production-grade full-stack MERN application that evaluates a candidate's Date
 
 ---
 
+## 🧭 Navigation Modules & The "Career Matrix"
+
+To ensure **1:1 fidelity with the assessment reference demo (video prototype)**, the application sidebar incorporates the four system modules:
+
+| Module | Icon | Functional Scope | Status |
+|---|:---:|---|---|
+| **Analytics** | `BarChart3` | **Primary Assessment Engine:** Evaluates candidate DOB, enforces odd/even day parental parity, computes factor distributions, verifies mathematical invariants, provides Recharts visualizations, and exports PDF/CSV reports. | ✅ Core Assessment Complete |
+| **Upload Data** | `UploadCloud` | **Dynamic Spreadsheet Ingestion:** Parses custom Excel files (`Test.xlsx`) via Multer and SheetJS to dynamically override factor boundaries and re-calculate distributions in real time. | ✅ Production Ready |
+| **Reports** | `FileText` | **Historical Audit Archive:** Manages persistent calculation sessions with MongoDB backend storage and browser fallback for continuous assessment history. | ✅ Production Ready |
+| **Career Matrix** | `Layers` | **Vocational & Aptitude Projection:** In the Quantum Vedic system, the 7 calculated parental life factors (e.g., *Intellectual Capacity*, *Mental Patterns*, *Constitutional Vitality*) serve as the psychological substrate for career suitability analysis, vocational strengths, and leadership alignment. Included in navigation for exact visual parity with the reference prototype. | 📐 UI Aligned (Architecture Prototype) |
+
+---
+
 ## 🛠️ Tech Stack
 
 - **Frontend:** React 18, Vite, Tailwind CSS, Recharts, Lucide Icons, jsPDF, SheetJS (xlsx).
