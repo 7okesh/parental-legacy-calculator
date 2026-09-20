@@ -101,10 +101,4 @@ node server/testCalculation.js
 | `POST` | `/api/auth/login` | User login (`{ email, password }`) | Public |
 | `GET` | `/api/auth/me` | Current authenticated user profile | Bearer Token |
 
----
 
-## 📄 Submission Contact
-
-- **Candidate:** Lokesh Prajapati
-- **Phone:** +91-9022398228
-- **Email:** 7okeshprajapati23@gmail.com
