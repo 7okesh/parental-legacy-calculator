@@ -332,6 +332,38 @@ npm run dev:server
 
 ---
 
+## Deployment to Render (Render.com)
+
+The application is architected for **single-click zero-config deployment** on [Render.com](https://render.com/) via the included `render.yaml` Blueprint or manual Web Service setup.
+
+### Option A: Automatic Deployment via Render Blueprint (Recommended)
+1. Log into your [Render Dashboard](https://dashboard.render.com/).
+2. Click **New +** → **Blueprint**.
+3. Connect your repository: `https://github.com/7okesh/parental-legacy-calculator`.
+4. Render automatically reads [`render.yaml`](file:///D:/New%20folder/render.yaml), configures the build, and deploys both backend and frontend under a single public URL.
+
+### Option B: Manual Web Service on Render
+1. Log into [Render](https://dashboard.render.com/) and click **New +** → **Web Service**.
+2. Select your repository: `7okesh/parental-legacy-calculator`.
+3. Fill in the deployment details:
+   - **Name:** `parental-legacy-calculator`
+   - **Region:** Any (e.g., Singapore / Oregon / Frankfurt)
+   - **Branch:** `main`
+   - **Root Directory:** *(leave blank for root)*
+   - **Runtime:** `Node`
+   - **Build Command:** `npm run build`
+   - **Start Command:** `npm start`
+   - **Instance Type:** `Free`
+4. Under **Environment Variables**, add:
+   - `NODE_ENV` = `production`
+   - `PORT` = `5000`
+   - `JWT_SECRET` = `super_secret_jwt_key_quantum_vedic_2026_production`
+   - `MONGODB_URI` = *(Optional: paste your MongoDB Atlas connection string, or omit for automated in-memory persistence fallback)*
+5. Click **Create Web Service**. Within 2 minutes, your live production application will be live at:
+   `https://parental-legacy-calculator.onrender.com`
+
+---
+
 ## Git Commit History
 
 The project follows conventional, atomic commit standards:
