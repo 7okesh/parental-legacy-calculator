@@ -8,7 +8,7 @@ const inMemoryHistory = [];
 
 export const calculate = async (req, res, next) => {
   try {
-    const { dob, dynamicSeed } = req.body;
+    const { dob, dynamicSeed, customFactors } = req.body;
 
     if (!dob) {
       return res.status(400).json({
@@ -17,7 +17,10 @@ export const calculate = async (req, res, next) => {
       });
     }
 
-    const result = calculateLegacyFactors(dob, { dynamicSeed: !!dynamicSeed });
+    const result = calculateLegacyFactors(dob, { 
+      dynamicSeed: !!dynamicSeed,
+      customFactors: Array.isArray(customFactors) && customFactors.length > 0 ? customFactors : null
+    });
 
     return res.status(200).json({
       success: true,

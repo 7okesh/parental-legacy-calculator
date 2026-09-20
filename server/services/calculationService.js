@@ -82,10 +82,14 @@ export const calculateLegacyFactors = (dateInput, options = {}) => {
   const dominantParent = isOddDay ? 'Mother' : 'Father';
   const nonDominantParent = isOddDay ? 'Father' : 'Mother';
 
+  const sourceFactors = Array.isArray(options.customFactors) && options.customFactors.length > 0
+    ? options.customFactors
+    : LIFE_FACTORS;
+
   // Compute values for each factor
-  const factors = LIFE_FACTORS.map((factor) => {
-    let higherVal = factor.highBaseline;
-    let lowerVal = factor.lowBaseline;
+  const factors = sourceFactors.map((factor, idx) => {
+    let higherVal = factor.highBaseline ?? Math.max(factor.mother ?? 0, factor.father ?? 0);
+    let lowerVal = factor.lowBaseline ?? Math.min(factor.mother ?? 0, factor.father ?? 0);
 
     if (options.dynamicSeed) {
       const seed = Math.sin(day * 13 + month * 37 + year * 7) * 10000;
@@ -105,7 +109,7 @@ export const calculateLegacyFactors = (dateInput, options = {}) => {
     const totalValue = Number((motherValue + fatherValue).toFixed(3));
 
     return {
-      id: factor.id,
+      id: factor.id || idx + 1,
       name: factor.name,
       motherValue,
       fatherValue,

@@ -14,7 +14,10 @@ const DateController = ({
   currentDob, 
   onDateChange, 
   onUpdateLogic, 
-  isCalculating
+  isCalculating,
+  currentFileName = 'Test.xlsx',
+  hasCustomFactors = false,
+  onResetToDefault
 }) => {
   const { isDark } = useTheme();
   const [calendarOpen, setCalendarOpen] = useState(false);
@@ -86,11 +89,11 @@ const DateController = ({
 
   return (
     <div className={`
-      rounded-xl border transition-all duration-150 overflow-hidden
+      rounded-xl border transition-all duration-150 relative z-30
       ${isDark ? 'bg-[#111827] border-[#26324A]' : 'bg-white border-slate-200 shadow-sm'}
     `}>
       {/* Engine Control Bar */}
-      <div className="p-5 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+      <div className="p-5 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 rounded-t-xl">
         {/* Title & Engine Metadata */}
         <div>
           <div className="flex items-center space-x-2.5">
@@ -127,13 +130,13 @@ const DateController = ({
               <span>{currentDob || 'DD/MM/YYYY'}</span>
             </button>
 
-            {/* Calendar Popup */}
+            {/* Calendar Popup - high z-index and shadow, not clipped */}
             {calendarOpen && (
               <div className={`
-                absolute right-0 top-full mt-1.5 z-50 w-64 p-3.5 rounded-xl border shadow-xl
-                ${isDark ? 'bg-[#151D2F] border-[#2B3A5A] text-slate-100' : 'bg-white border-slate-200 text-slate-800'}
+                absolute right-0 top-full mt-2 z-50 w-72 p-4 rounded-xl border shadow-2xl backdrop-blur-md
+                ${isDark ? 'bg-[#151D2F] border-[#2B3A5A] text-slate-100 shadow-black/80' : 'bg-white border-slate-200 text-slate-800 shadow-xl'}
               `}>
-                <div className="flex items-center justify-between mb-2.5 pb-2 border-b border-inherit">
+                <div className="flex items-center justify-between mb-3 pb-2.5 border-b border-[#26324A]">
                   <span className="font-semibold text-xs text-slate-200">
                     {monthNames[viewMonth]} {viewYear}
                   </span>
@@ -141,21 +144,21 @@ const DateController = ({
                     <button
                       type="button"
                       onClick={handlePrevMonth}
-                      className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-white"
+                      className="p-1 rounded hover:bg-[#1E293B] text-slate-400 hover:text-white transition-colors"
                     >
-                      <ChevronLeft className="h-3.5 w-3.5" />
+                      <ChevronLeft className="h-4 w-4" />
                     </button>
                     <button
                       type="button"
                       onClick={handleNextMonth}
-                      className="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-white"
+                      className="p-1 rounded hover:bg-[#1E293B] text-slate-400 hover:text-white transition-colors"
                     >
-                      <ChevronRight className="h-3.5 w-3.5" />
+                      <ChevronRight className="h-4 w-4" />
                     </button>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-mono text-slate-400 mb-1">
+                <div className="grid grid-cols-7 gap-1 text-center text-[10px] font-mono text-slate-400 mb-2">
                   {daysOfWeek.map((d, i) => (
                     <div key={i}>{d}</div>
                   ))}
@@ -163,7 +166,7 @@ const DateController = ({
 
                 <div className="grid grid-cols-7 gap-1 text-center text-xs">
                   {Array.from({ length: firstDayIndex }).map((_, i) => (
-                    <div key={`empty-${i}`} className="h-6 w-6" />
+                    <div key={`empty-${i}`} className="h-7 w-7" />
                   ))}
                   {Array.from({ length: daysInMonth }).map((_, i) => {
                     const dayNumber = i + 1;
@@ -178,9 +181,9 @@ const DateController = ({
                         type="button"
                         onClick={() => handleSelectDay(dayNumber)}
                         className={`
-                          h-6 w-6 rounded flex items-center justify-center font-mono text-xs transition-colors
+                          h-7 w-7 rounded-md flex items-center justify-center font-mono text-xs transition-colors
                           ${isSelected 
-                            ? 'bg-blue-600 text-white font-bold' 
+                            ? 'bg-blue-600 text-white font-bold shadow-sm' 
                             : isDark 
                               ? 'text-slate-300 hover:bg-[#1E293B] hover:text-white' 
                               : 'text-slate-700 hover:bg-slate-100 hover:text-blue-600'
@@ -193,7 +196,7 @@ const DateController = ({
                   })}
                 </div>
 
-                <div className="flex items-center justify-between mt-2.5 pt-2 border-t border-inherit text-[11px]">
+                <div className="flex items-center justify-between mt-3 pt-2.5 border-t border-[#26324A] text-[11px]">
                   <button
                     type="button"
                     onClick={handleClear}
@@ -229,16 +232,34 @@ const DateController = ({
         </div>
       </div>
 
-      {/* Subtle Technical Telemetry Strip */}
-      <div className={`px-5 py-2 border-t flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono ${
+      {/* Technical Telemetry Strip */}
+      <div className={`px-5 py-2 border-t flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono rounded-b-xl ${
         isDark ? 'bg-[#0E1526] border-[#202C45] text-slate-400' : 'bg-slate-50 border-slate-200 text-slate-600'
       }`}>
-        <div className="flex items-center space-x-4">
-          <span>Source: <strong className="text-slate-300 font-normal">Test.xlsx</strong></span>
+        <div className="flex items-center space-x-3 flex-wrap">
+          <div className="flex items-center space-x-1.5">
+            <span>Source:</span>
+            <strong className="text-blue-400 font-semibold">{currentFileName}</strong>
+          </div>
+          {hasCustomFactors ? (
+            <span className="inline-flex items-center px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px]">
+              ● LIVE DATASET LOADED
+            </span>
+          ) : (
+            <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700/60 text-[10px]">
+              Default Matrix
+            </span>
+          )}
+          {hasCustomFactors && onResetToDefault && (
+            <button
+              onClick={onResetToDefault}
+              className="text-[10px] text-slate-400 hover:text-rose-400 underline transition-colors ml-1"
+            >
+              (Reset to Default)
+            </button>
+          )}
           <span className="text-slate-600">•</span>
-          <span>Factors Evaluated: <strong className="text-slate-300 font-normal">7</strong></span>
-          <span className="text-slate-600 hidden sm:inline">•</span>
-          <span className="hidden sm:inline">Engine: <strong className="text-slate-300 font-normal">Parity Dominance</strong></span>
+          <span>Factors: <strong className="text-slate-300 font-normal">7</strong></span>
         </div>
         <div className="flex items-center space-x-4">
           <span>Precision: <strong className="text-slate-300 font-normal">3 Decimals</strong></span>

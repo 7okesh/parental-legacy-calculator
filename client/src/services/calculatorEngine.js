@@ -11,18 +11,20 @@ export const computeParentalLegacy = (dateString, customFactors = null) => {
   const dominantParent = isOddDay ? 'Mother' : 'Father';
   const nonDominantParent = isOddDay ? 'Father' : 'Mother';
 
-  const factorsToUse = customFactors && customFactors.length === 7 ? customFactors : DEFAULT_FACTORS;
+  const factorsToUse = Array.isArray(customFactors) && customFactors.length > 0 
+    ? customFactors 
+    : DEFAULT_FACTORS;
 
-  const factors = factorsToUse.map((factor) => {
-    const higherVal = factor.highBaseline;
-    const lowerVal = factor.lowBaseline;
+  const factors = factorsToUse.map((factor, idx) => {
+    const higherVal = factor.highBaseline ?? Math.max(factor.mother ?? 0, factor.father ?? 0);
+    const lowerVal = factor.lowBaseline ?? Math.min(factor.mother ?? 0, factor.father ?? 0);
 
     const motherValue = isOddDay ? higherVal : lowerVal;
     const fatherValue = isOddDay ? lowerVal : higherVal;
     const totalValue = Number((motherValue + fatherValue).toFixed(3));
 
     return {
-      id: factor.id,
+      id: factor.id || idx + 1,
       name: factor.name,
       motherValue,
       fatherValue,

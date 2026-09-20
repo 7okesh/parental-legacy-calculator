@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTheme } from '../../context/ThemeContext';
 
-const FactorTable = ({ calculation }) => {
+const FactorTable = ({ calculation, currentFileName = 'Test.xlsx', hasCustomFactors = false }) => {
   const { isDark } = useTheme();
 
   if (!calculation || !calculation.factors) return null;
@@ -12,16 +12,25 @@ const FactorTable = ({ calculation }) => {
       ${isDark ? 'bg-[#111827] border-[#26324A]' : 'bg-white border-slate-200 shadow-sm'}
     `}>
       {/* Table Header Section */}
-      <div className={`px-5 py-3.5 border-b flex items-center justify-between ${
+      <div className={`px-5 py-3.5 border-b flex items-center justify-between flex-wrap gap-2 ${
         isDark ? 'border-[#202C45]' : 'border-slate-200'
       }`}>
-        <div className="flex items-center space-x-2.5">
+        <div className="flex items-center space-x-2.5 flex-wrap gap-y-1">
           <h2 className={`text-sm font-bold tracking-tight ${isDark ? 'text-slate-100' : 'text-slate-900'}`}>
             Detailed Factor Breakdown
           </h2>
           <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700/60">
-            7 Life Factors
+            {calculation.factors.length} Life Factors
           </span>
+          {hasCustomFactors ? (
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+              Active: {currentFileName}
+            </span>
+          ) : (
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20">
+              Active: {currentFileName}
+            </span>
+          )}
         </div>
         <div className="text-[11px] font-mono text-slate-400">
           Precision: <span className="text-slate-200">0.001</span>

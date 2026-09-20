@@ -25,6 +25,21 @@ export const parseExcelFile = async (req, res, next) => {
         headerRowIndex = i;
         break;
       }
+      if (firstCell.includes('GENETIC') || firstCell.includes('VITALITY')) {
+        headerRowIndex = Math.max(0, i - 1);
+        break;
+      }
+    }
+
+    if (headerRowIndex === -1) {
+      for (let i = 0; i < jsonData.length; i++) {
+        const val1 = parseFloat(jsonData[i][1]);
+        const val2 = parseFloat(jsonData[i][2]);
+        if (!isNaN(val1) && !isNaN(val2) && val1 > 0 && val2 > 0) {
+          headerRowIndex = Math.max(0, i - 1);
+          break;
+        }
+      }
     }
 
     if (headerRowIndex !== -1) {

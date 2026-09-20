@@ -38,6 +38,21 @@ const UploadModal = ({ isOpen, onClose, onFactorsLoaded, setCurrentFileName }) =
               headerIdx = i;
               break;
             }
+            if (row0.includes('GENETIC') || row0.includes('VITALITY')) {
+              headerIdx = Math.max(0, i - 1);
+              break;
+            }
+          }
+
+          if (headerIdx === -1) {
+            for (let i = 0; i < data.length; i++) {
+              const val1 = parseFloat(data[i][1]);
+              const val2 = parseFloat(data[i][2]);
+              if (!isNaN(val1) && !isNaN(val2) && val1 > 0 && val2 > 0) {
+                headerIdx = Math.max(0, i - 1);
+                break;
+              }
+            }
           }
 
           const extracted = [];
@@ -107,7 +122,7 @@ const UploadModal = ({ isOpen, onClose, onFactorsLoaded, setCurrentFileName }) =
       }
 
       if (loadedFactors && loadedFactors.length > 0) {
-        onFactorsLoaded(loadedFactors);
+        onFactorsLoaded(loadedFactors, file.name);
         setCurrentFileName(file.name);
         setStatus({
           type: 'success',

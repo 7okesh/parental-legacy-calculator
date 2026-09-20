@@ -50,8 +50,8 @@ function App() {
     setIsCalculating(true);
 
     try {
-      // 1. Try server calculation
-      const serverResult = await calculateOnServer(dobToCalculate);
+      // 1. Try server calculation with custom factors forwarded
+      const serverResult = await calculateOnServer(dobToCalculate, false, factorsToUse);
       if (serverResult && serverResult.success && serverResult.data) {
         setCalculation(serverResult.data);
       } else {
@@ -87,6 +87,14 @@ function App() {
     }
     executeCalculation(currentDob);
     showToast(`Logic recalculated for ${currentDob}`, 'success');
+  };
+
+  // Reset to default dataset
+  const handleResetToDefault = () => {
+    setCustomFactors(null);
+    setCurrentFileName('Test.xlsx');
+    executeCalculation(currentDob, null);
+    showToast('Reset to default assessment parameters (Test.xlsx)', 'info');
   };
 
   // Handle PDF Export
@@ -133,10 +141,16 @@ function App() {
   };
 
   // Handle custom factors from Excel upload
-  const handleFactorsLoaded = (newFactors) => {
+  const handleFactorsLoaded = (newFactors, fileName) => {
     setCustomFactors(newFactors);
+    if (fileName) {
+      setCurrentFileName(fileName);
+    }
+    // Instantly calculate and update client state with new factors
+    const localResult = computeParentalLegacy(currentDob, newFactors);
+    setCalculation(localResult);
     executeCalculation(currentDob, newFactors);
-    showToast('Custom factor matrix loaded from spreadsheet!', 'success');
+    showToast(`Loaded ${newFactors.length} factors from ${fileName || 'spreadsheet'}!`, 'success');
   };
 
   return (
@@ -182,13 +196,20 @@ function App() {
             onDateChange={handleDateChange}
             onUpdateLogic={handleUpdateLogic}
             isCalculating={isCalculating}
+            currentFileName={currentFileName}
+            hasCustomFactors={!!customFactors}
+            onResetToDefault={handleResetToDefault}
           />
 
           {/* 3 Metric Cards matching video */}
           <MetricCards calculation={calculation} />
 
           {/* Detailed Factor Breakdown Table matching video */}
-          <FactorTable calculation={calculation} />
+          <FactorTable 
+            calculation={calculation} 
+            currentFileName={currentFileName}
+            hasCustomFactors={!!customFactors}
+          />
 
           {/* Charts Visualization Section [PDF Mandatory] */}
           <FactorCharts calculation={calculation} />

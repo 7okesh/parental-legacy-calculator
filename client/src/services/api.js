@@ -15,8 +15,8 @@ api.interceptors.request.use((config) => {
   return config;
 }, (error) => Promise.reject(error));
 
-export const calculateOnServer = async (dob, dynamicSeed = false) => {
-  const res = await api.post('/calculator/calculate', { dob, dynamicSeed });
+export const calculateOnServer = async (dob, dynamicSeed = false, customFactors = null) => {
+  const res = await api.post('/calculator/calculate', { dob, dynamicSeed, customFactors });
   return res.data;
 };
 
