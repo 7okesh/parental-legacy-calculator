@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import { calculateLegacyFactors } from '../services/calculationService.js';
 import CalculationHistory from '../models/CalculationHistory.js';
 import { LIFE_FACTORS } from '../utils/factorConstants.js';
@@ -45,13 +46,22 @@ export const saveCalculation = async (req, res, next) => {
       });
     }
 
-    const userId = req.user ? req.user._id : null;
+    const rawUserId = req.user ? (req.user.id || req.user._id) : null;
+    const userId = rawUserId ? String(rawUserId) : null;
+    const parts = String(calculationData.dob).split('/');
+    const parsedDay = parseInt(parts[0], 10) || 1;
+    const day = calculationData.day || parsedDay;
+    const isOddDay = calculationData.isOddDay !== undefined ? calculationData.isOddDay : (day % 2 !== 0);
+
+    const fullPayload = {
+      ...calculationData,
+      day,
+      isOddDay,
+      userId
+    };
 
     if (getDbStatus()) {
-      const record = await CalculationHistory.create({
-        ...calculationData,
-        userId
-      });
+      const record = await CalculationHistory.create(fullPayload);
 
       return res.status(201).json({
         success: true,
@@ -63,8 +73,8 @@ export const saveCalculation = async (req, res, next) => {
       const fakeId = 'rec_' + Date.now();
       const record = {
         _id: fakeId,
-        ...calculationData,
-        userId,
+        id: fakeId,
+        ...fullPayload,
         createdAt: new Date()
       };
       inMemoryHistory.unshift(record);
@@ -82,10 +92,19 @@ export const saveCalculation = async (req, res, next) => {
 
 export const getHistory = async (req, res, next) => {
   try {
-    const userId = req.user ? req.user._id : null;
+    const rawUserId = req.user ? (req.user.id || req.user._id) : null;
+    const userId = rawUserId ? String(rawUserId) : null;
 
     if (getDbStatus()) {
-      const query = userId ? { userId } : {};
+      let query = {};
+      if (userId) {
+        const conditions = [{ userId }];
+        if (mongoose.Types.ObjectId.isValid(userId)) {
+          conditions.push({ userId: new mongoose.Types.ObjectId(userId) });
+        }
+        query = { $or: conditions };
+      }
+
       const history = await CalculationHistory.find(query)
         .sort({ createdAt: -1 })
         .limit(50);

@@ -5,9 +5,9 @@ import { getDbStatus } from '../config/db.js';
 // In-memory fallback users if Mongo is offline
 const inMemoryUsers = new Map();
 
-const generateToken = (id, email, name) => {
+const generateToken = (id, email, name, role = 'user') => {
   const secret = process.env.JWT_SECRET || 'super_secret_jwt_key_quantum_vedic_2026_production';
-  return jwt.sign({ id, email, name }, secret, { expiresIn: '30d' });
+  return jwt.sign({ id: String(id), email, name, role }, secret, { expiresIn: '30d' });
 };
 
 export const register = async (req, res, next) => {
@@ -141,10 +141,25 @@ export const login = async (req, res, next) => {
 
 export const getMe = async (req, res, next) => {
   try {
-    res.status(200).json({
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: 'Not authorized, user profile not available.'
+      });
+    }
+
+    const userId = req.user.id || req.user._id;
+
+    return res.status(200).json({
       success: true,
       data: {
-        user: req.user
+        user: {
+          id: userId,
+          _id: userId,
+          name: req.user.name,
+          email: req.user.email,
+          role: req.user.role || 'user'
+        }
       }
     });
   } catch (error) {

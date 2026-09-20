@@ -1,5 +1,7 @@
 import jwt from 'jsonwebtoken';
+import mongoose from 'mongoose';
 import User from '../models/User.js';
+import { getDbStatus } from '../config/db.js';
 
 export const protect = async (req, res, next) => {
   let token;
@@ -18,13 +20,30 @@ export const protect = async (req, res, next) => {
   try {
     const secret = process.env.JWT_SECRET || 'super_secret_jwt_key_quantum_vedic_2026_production';
     const decoded = jwt.verify(token, secret);
-    
-    // Attach user (without password)
-    req.user = await User.findById(decoded.id).select('-password');
-    if (!req.user) {
-      // In-memory or fallback mode user
-      req.user = { _id: decoded.id, email: decoded.email, name: decoded.name || 'User' };
+
+    let user = null;
+
+    // Only attempt database lookup if MongoDB is connected AND id is a valid Mongo ObjectId
+    if (getDbStatus() && mongoose.Types.ObjectId.isValid(decoded.id)) {
+      try {
+        user = await User.findById(decoded.id).select('-password');
+      } catch {
+        user = null;
+      }
     }
+
+    // If DB is offline, user is in-memory, or query returned null, construct user from decoded token payload
+    if (!user) {
+      user = {
+        _id: decoded.id,
+        id: decoded.id,
+        email: decoded.email,
+        name: decoded.name || 'User',
+        role: decoded.role || 'user'
+      };
+    }
+
+    req.user = user;
     next();
   } catch (error) {
     return res.status(401).json({
@@ -44,7 +63,27 @@ export const optionalAuth = async (req, res, next) => {
     try {
       const secret = process.env.JWT_SECRET || 'super_secret_jwt_key_quantum_vedic_2026_production';
       const decoded = jwt.verify(token, secret);
-      req.user = await User.findById(decoded.id).select('-password') || { _id: decoded.id };
+
+      let user = null;
+      if (getDbStatus() && mongoose.Types.ObjectId.isValid(decoded.id)) {
+        try {
+          user = await User.findById(decoded.id).select('-password');
+        } catch {
+          user = null;
+        }
+      }
+
+      if (!user) {
+        user = {
+          _id: decoded.id,
+          id: decoded.id,
+          email: decoded.email,
+          name: decoded.name || 'User',
+          role: decoded.role || 'user'
+        };
+      }
+
+      req.user = user;
     } catch {
       // ignore invalid token for optional endpoints
     }

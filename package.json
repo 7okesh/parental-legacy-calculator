@@ -9,7 +9,9 @@
     "dev:server": "npm run dev --prefix server",
     "dev:client": "npm run dev --prefix client",
     "build": "npm --prefix client install --include=dev && npm --prefix client run build && npm --prefix server install",
-    "start": "node server/server.js"
+    "start": "node server/server.js",
+    "test": "node server/testCalculation.js && node server/testAllApis.js",
+    "test:api": "node server/testAllApis.js"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"

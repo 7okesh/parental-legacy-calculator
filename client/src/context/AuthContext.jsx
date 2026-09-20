@@ -10,14 +10,17 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const initAuth = async () => {
-      if (token) {
+      const storedToken = localStorage.getItem('qv_token');
+      if (storedToken) {
         try {
           const res = await getMeApi();
-          if (res && res.data) {
+          if (res && res.data && res.data.user) {
             setUser(res.data.user);
+            setToken(storedToken);
+          } else {
+            throw new Error('Invalid profile');
           }
         } catch {
-          // Token expired or server unreachable
           localStorage.removeItem('qv_token');
           setToken(null);
           setUser(null);
@@ -27,14 +30,14 @@ export const AuthProvider = ({ children }) => {
     };
 
     initAuth();
-  }, [token]);
+  }, []);
 
   const login = async (email, password) => {
     const res = await loginApi(email, password);
     if (res.success && res.data) {
+      localStorage.setItem('qv_token', res.data.token);
       setToken(res.data.token);
       setUser(res.data.user);
-      localStorage.setItem('qv_token', res.data.token);
       return res.data;
     }
     throw new Error(res.message || 'Login failed');
@@ -43,9 +46,9 @@ export const AuthProvider = ({ children }) => {
   const register = async (name, email, password) => {
     const res = await registerApi(name, email, password);
     if (res.success && res.data) {
+      localStorage.setItem('qv_token', res.data.token);
       setToken(res.data.token);
       setUser(res.data.user);
-      localStorage.setItem('qv_token', res.data.token);
       return res.data;
     }
     throw new Error(res.message || 'Registration failed');
